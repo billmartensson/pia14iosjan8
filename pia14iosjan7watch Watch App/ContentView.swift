@@ -11,28 +11,47 @@ struct ContentView: View {
     
     @State var mynumber = 0
     
+    @State var piaconnect = PIAConnectWatch()
+    
     var body: some View {
         NavigationStack {
-            VStack {
-                Text(FancyCode().makeNiceText())
-                Text("\(mynumber)")
-                
-                HStack {
-                    Button("MINUS") {
-                        mynumber -= 1
+            ScrollView {
+                VStack {
+                    
+                    if piaconnect.isreachable {
+                        Text("CONNECTED")
+                    } else {
+                        Text("NOT CONNECT")
                     }
-                    Button("PLUS") {
-                        mynumber += 1
+                    Text(piaconnect.messagetext)
+                    
+                    Button("SEND") {
+                        piaconnect.sendMessage(message: "KLOCKA")
                     }
+                    
+                    Text(FancyCode().makeNiceText())
+                    Text("\(mynumber)")
+                    
+                    HStack {
+                        Button("MINUS") {
+                            mynumber -= 1
+                        }
+                        Button("PLUS") {
+                            mynumber += 1
+                        }
+                    }
+                    
+                    NavigationLink(destination: ReadmoreView()) {
+                        Text("Go read more")
+                    }
+                    
+                    FancyBoxView()
                 }
-                
-                NavigationLink(destination: ReadmoreView()) {
-                    Text("Go read more")
+                .padding()
+                .onAppear() {
+                    piaconnect.startconnect()
                 }
-                
-                FancyBoxView()
             }
-            .padding()
         }
     }
 }
